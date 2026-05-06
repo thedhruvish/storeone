@@ -4,7 +4,9 @@
   "description": "![Version](https://img.shields.io/badge/version-beta-blue)\r ![License](https://img.shields.io/badge/license-ISC-green)\r ![Build](https://img.shields.io/badge/build-passing-success)",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,7 @@
   },
   "homepage": "https://storeone.cloud",
   "devDependencies": {
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "wrangler": "^4.88.0"
   }
 }
