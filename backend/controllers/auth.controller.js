@@ -171,7 +171,7 @@ export const loginWithGoogle = async (req, res) => {
     providerId: sub,
     provider: "GOOGLE",
   });
-
+  console.log("run on the google");
   let userId;
   let showSetUp2Fa;
   if (exstingEmail) {
@@ -183,10 +183,10 @@ export const loginWithGoogle = async (req, res) => {
           new ApiError(409, "Your Account is Deleted. Please Contact Admin"),
         );
     }
+    userId = exstingEmail.userId._id;
     // TEMP: disable for the mobile
     if (!req.isMobile) {
       // verifiy 2FA
-      userId = exstingEmail.userId._id;
       if (exstingEmail.userId?.twoFactorId?.isEnabled) {
         showSetUp2Fa = false;
         const twoFa = exstingEmail.userId?.twoFactorId;
@@ -215,9 +215,10 @@ export const loginWithGoogle = async (req, res) => {
       sub,
       "GOOGLE",
     );
-    if (!userId) {
-      return res.status(400).json(new ApiError(400, "Try Agin"));
-    }
+  }
+  console.log("user id " + userId);
+  if (!userId) {
+    return res.status(400).json(new ApiError(400, "Try Agin"));
   }
 
   const sessionId = await createAndCheckLimitSession({
@@ -294,7 +295,7 @@ export const callbackGithub = async (req, res) => {
           `${process.env.FRONTEND_URL}/auth/github?error=${errorMessge}error_description=Your Account is Deleted. Please Contact Admin`,
         );
       }
-      userId = exstingEmail.userId;
+      userId = exstingEmail.userId._id;
       // verifiy 2FA
       if (exstingEmail.userId?.twoFactorId?.isEnabled) {
         userId = exstingEmail.userId._id;
