@@ -171,7 +171,7 @@ export const loginWithGoogle = async (req, res) => {
     providerId: sub,
     provider: "GOOGLE",
   });
-  console.log("run on the google");
+
   let userId;
   let showSetUp2Fa;
   if (exstingEmail) {
@@ -216,7 +216,7 @@ export const loginWithGoogle = async (req, res) => {
       "GOOGLE",
     );
   }
-  console.log("user id " + userId);
+
   if (!userId) {
     return res.status(400).json(new ApiError(400, "Try Agin"));
   }

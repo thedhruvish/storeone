@@ -79,7 +79,10 @@ export function useLogin() {
       }
     },
     onError: (error: any) => {
-      const message = error.response?.data?.message || "Failed to login";
+      const message =
+        error.response?.data?.message?.toString() ||
+        error.message?.toString() ||
+        "An unexpected error occurred";
       showGlobalDialog({
         title: "Error",
         message: message,
@@ -103,7 +106,10 @@ export function useRegister() {
       });
     },
     onError: (error: any) => {
-      const message = error.response?.data?.message || "Failed to register";
+      const message =
+        error.response?.data?.message?.toString() ||
+        error.message?.toString() ||
+        "Failed to register";
       showGlobalDialog({
         title: "Error",
         message: message,
@@ -144,7 +150,10 @@ export function useVerifyOtp() {
       }
     },
     onError: (error: any) => {
-      const message = error.response?.data?.message || "Invalid OTP";
+      const message =
+        error.response?.data?.message?.toString() ||
+        error.message?.toString() ||
+        "An unexpected error occurred";
       showGlobalDialog({
         title: "Error",
         message: message,
@@ -190,7 +199,10 @@ export function useGoogleLogin() {
       }
     },
     onError: (error: any) => {
-      const message = error.response?.data?.message || "Google Sign-In failed";
+      const message =
+        error.response?.data?.message?.toString() ||
+        error.message?.toString() ||
+        "Google Sign-In failed";
       showGlobalDialog({
         title: "Error",
         message: message,

@@ -39,19 +39,27 @@ export function GoogleSignInButton({
     setIsSigningIn(true);
     try {
       await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
 
-      let idToken = userInfo.data?.idToken;
+      // Force account selection by signing out first
+      try {
+        await GoogleSignin.signOut();
+      } catch {
+        // Ignore if not signed in
+      }
+
+      const response = await GoogleSignin.signIn();
+
+      // In some versions idToken is nested in data, in others it's top-level
+      const idToken = response.data?.idToken || (response as any).idToken;
 
       if (idToken) {
         loginWithGoogle.mutate({
           idToken: idToken,
         });
+        onSuccess?.(response);
       } else {
-        throw new Error("ID_TOKEN_MISSING");
+        throw new Error("Google Sign-In failed: ID token is missing.");
       }
-
-      onSuccess?.(userInfo);
     } catch (error: any) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         if (Platform.OS === "android") {
@@ -66,7 +74,7 @@ export function GoogleSignInButton({
 
       // Handle other Google Sign-In errors (e.g., developer error, play services)
       const message =
-        error.message || "An error occurred during Google Sign-In";
+        error?.message?.toString() || "An error occurred during Google Sign-In";
       showGlobalDialog({
         title: "Google Sign-In Error",
         message: message,

@@ -2,6 +2,7 @@ import { AUTH_TOKEN_NAME, handleToken } from "@/utils/handle-token";
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { getDeviceInfo } from "@/utils/device-info";
 import { performLogout } from "@/lib/logout-handler";
+import { showGlobalDialog } from "@/components/dialog";
 
 /**
  * Update this URL with your actual backend API base URL
@@ -15,6 +16,8 @@ const axiosClient = axios.create({
     Accept: "application/json",
   },
 });
+
+let isSessionExpiredDialogShowing = false;
 
 // Request Interceptor
 axiosClient.interceptors.request.use(
@@ -59,7 +62,19 @@ axiosClient.interceptors.response.use(
       console.error("API Error Response:", error.response.data);
 
       if (status === 401 || status === 403) {
-        performLogout();
+        if (!isSessionExpiredDialogShowing) {
+          isSessionExpiredDialogShowing = true;
+          showGlobalDialog({
+            title: "Session Expired",
+            message: "Your session has expired. Please log in again to continue.",
+            type: "warning",
+            confirmText: "Login",
+            onConfirm: () => {
+              isSessionExpiredDialogShowing = false;
+              performLogout();
+            },
+          });
+        }
       }
     } else if (error.request) {
       console.error("API No Response:", error.request);
